@@ -15,7 +15,8 @@ def get_data(dataset_name):
     :return: String that JSON of queried rows and columns
     """
 
-@route('get_rows/<dataset_name>', method=GET)
+
+@route('get_rows/<dataset_name>', method='GET')
 def get_rows(dataset_name):
     """
     GET request to get JSON list of all rows in a dataset
@@ -26,7 +27,7 @@ def get_rows(dataset_name):
     :return: JSON string of all rows
     """
 
-@route('get_columns/<dataset_name>', method=GET)
+@route('get_columns/<dataset_name>', method='GET')
 def get_columns(dataset_name):
     """
     GET request to get JSON list of all columns in a dataset
@@ -37,11 +38,23 @@ def get_columns(dataset_name):
     :return: JSON string of all rows
     """
 
+@route('test/<a_string>', method ='GET')
+def test(a_string):
+    vals = request.query.vals
+
+    return template("Values are {{stuff}}", stuff=vals)
+
+
+@route('/foo', method='GET')
+def foo():
+    return template("Foo!")
+
 def start():
     """
     Starts server
     :return: void
     """
+    run(host='0.0.0.0', port=8080,debug=True)
 
 if __name__== "__main__":
     start()
