@@ -117,6 +117,7 @@ class MatrixReader(object):
             the same as dataset name in datasets instance variable
         :return: List of all row names in dataset_name
         """
+        return self.datasets[dataset_name].index
 
     def get_rows_json(self, dataset_name):
         """
@@ -126,6 +127,7 @@ class MatrixReader(object):
             the same as dataset name in datasets instance variable
         :return: JSON String of all row names in dataset_name
         """
+        return json.dumps(list( self.datasets[dataset_name].index ))
 
     def get_columns(self, dataset_name):
         """
@@ -135,6 +137,7 @@ class MatrixReader(object):
             the same as dataset name in datasets instance variable
         :return: List of all column names in dataset_name
         """
+        return self.datasets[dataset_name].columns
 
     def get_columns_json(self, dataset_name):
         """
@@ -144,3 +147,4 @@ class MatrixReader(object):
             the same as dataset name in datasets instance variable
         :return: JSON String of all column names in dataset_name
         """
+        return json.dumps(list( self.datasets[dataset_name].columns ))
