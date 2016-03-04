@@ -18,10 +18,12 @@ class MatrixReader(object):
 
         :param dataset_map: Dictionary where keys are dataframe names,
             and values are filepaths to their csv files
-        :param sep_char: Character used to separate elements in data, tab by default
+        :param sep_char: Character used to separate elements in data, tab by
+            default
         """
         for name in dataset_map:
-            self.datasets[name] = pd.read_csv( dataset_map[name], sep=sep_char, index_col=0)
+            self.datasets[name] = pd.read_csv( dataset_map[name], sep=sep_char,
+                index_col=0)
 
     # TODO Maybe change to static method or remove self param
     def __remove_duplicates(self, query_rows, query_columns):
@@ -33,8 +35,41 @@ class MatrixReader(object):
         :return: tuple where first element is query rows, 2nd is query columns,
             both without duplicates
         """
-        de_duped_query = (set(query_rows), set(query_columns))
-        return de_duped_query
+        return set(query_rows), set(query_columns)
+
+    def __check_validity(self, query_rows, query_columns, dataset_name):
+        """
+        Checks if query parameters are contained in dataset.
+        If not, removes invalid elements and returns pruned parameters
+
+        :param query_rows: List of desired rows
+        :param query_columns: List of desired columns
+        :param dataset_name: String that is name of dataset we want, should be
+            exactly the same as dataset name in datasets instance variable
+        :return: Tuple where 1st element is pruned query rows,
+            and second element is pruned query columns
+        """
+        table = self.datasets[dataset_name]
+        new_query_rows = []
+        new_query_columns = []
+
+        # Get pruned list of query rows
+        for row in query_rows:
+            if row in table.index:
+                new_query_rows.append(row)
+            else:
+                print("Row " + row + " not found, skipping")
+                continue
+
+        # Get pruned list of query columns
+        for column in query_columns:
+            if colunm in table.columns:
+                new_query_columns.append(column)
+            else:
+                print("Column " + column + " not found, skipping")
+                continue
+
+        return new_query_rows, new_query_columns
 
     def get_submatrix(self, query_rows, query_columns, dataset_name):
         """
@@ -49,15 +84,15 @@ class MatrixReader(object):
         """
         # Get table we are querying
         table = self.datasets[dataset_name]
+        output_table = pd.DataFrame()
 
-        """
-        Loop through all queries. If it is contained in table, append to
-        output, otherwise, skip it
-        """
-        for row in query_rows:
-            if row in table.index:
-                # Add row and respective columns to output
-            else:
+        # Clean query
+        (query_rows, query_columns) = \
+            self.__remove_duplicates(query_rows, query_columns)
+        (query_rows, query_columns) = \
+            self.__check_validity(query_rows, query_columns, dataset_name)
+
+        return table[query_rows,query_columns]
 
     def get_json(self, query_rows, query_columns, dataset_name):
         """
@@ -70,6 +105,9 @@ class MatrixReader(object):
             exactly the same as dataset name in datasets instance variable
         :return: Json string of only queried rows and columns
         """
+        output_table = self.get_submatrix(query_rows, query_columns,
+                                          dataset_name)
+        return output_table.to_json(orient="index")
 
     def get_rows(self, dataset_name):
         """
