@@ -10,7 +10,7 @@ class MatrixReader(object):
                             pandas dataframe representations
     """
 
-    datasets = None
+    datasets = {}
 
     def __init__(self, dataset_map, sep_char='\t'):
         """
@@ -22,7 +22,7 @@ class MatrixReader(object):
             default
         """
         for name in dataset_map:
-            self.datasets[name] = pd.read_csv( dataset_map[name], sep=sep_char,
+            self.datasets[name] = pd.read_csv(dataset_map[name], sep=sep_char,
                 index_col=0)
 
     # TODO Maybe change to static method or remove self param
@@ -63,7 +63,7 @@ class MatrixReader(object):
 
         # Get pruned list of query columns
         for column in query_columns:
-            if colunm in table.columns:
+            if column in table.columns:
                 new_query_columns.append(column)
             else:
                 print("Column " + column + " not found, skipping")
@@ -92,7 +92,7 @@ class MatrixReader(object):
         (query_rows, query_columns) = \
             self.__check_validity(query_rows, query_columns, dataset_name)
 
-        return table[query_rows,query_columns]
+        return table.loc[query_rows, query_columns]
 
     def get_json(self, query_rows, query_columns, dataset_name):
         """
