@@ -1,9 +1,9 @@
-import numpy as np
 from MatrixReader import MatrixReader
-from bottle import route, run, template, request, response
+from bottle import route, run, request
 
 DATASETS = {"CCLE": "CCLE_inferred_prot_abundance.tab"}
 reader = MatrixReader(DATASETS)
+
 
 @route('/query_table/<dataset_name>', method='GET')
 def query_table(dataset_name):
@@ -26,7 +26,7 @@ def query_table(dataset_name):
     print("cols: " + str(cols))
     print("cols raw: " + request.query.cols)
 
-    return reader.get_submatrix(rows, cols, dataset_name)
+    return reader.get_json(rows, cols, dataset_name)
 
 
 @route('/get_rows/<dataset_name>', method='GET')
@@ -40,6 +40,9 @@ def get_rows(dataset_name):
     :return: JSON string of all rows
     """
 
+    return reader.get_rows_json(dataset_name)
+
+
 @route('/get_columns/<dataset_name>', method='GET')
 def get_columns(dataset_name):
     """
@@ -51,6 +54,9 @@ def get_columns(dataset_name):
     :return: JSON string of all rows
     """
 
+    return reader.get_columns_json(dataset_name)
+
+"""
 @route('/test/<a_string>', method ='GET')
 def test(a_string):
     vals = request.query.vals
@@ -62,6 +68,7 @@ def test(a_string):
 @route('/foo', method='GET')
 def foo():
     return "Foo!" + request.query.msg
+"""
 
 def start():
     """

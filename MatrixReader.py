@@ -26,15 +26,18 @@ class MatrixReader(object):
                 index_col=0)
 
     # TODO Maybe change to static method or remove self param
-    def __remove_duplicates(self, query_rows, query_columns):
+    def __clean_query(self, query_rows, query_columns):
         """
-        Removes duplicates from rows and columns query
+        Removes duplicates from rows and columns query and make them uppercase
 
-        :param query_rows: Rows to be de-duplicated
-        :param query_columns: Columns to be de-duplicated
+        :param query_rows: Rows to be de-duplicated and uppercased
+        :param query_columns: Columns to be de-duplicated and uppercased
         :return: tuple where first element is query rows, 2nd is query columns,
-            both without duplicates
+            both without duplicates and uppercased
         """
+        query_rows = [row.upper() for row in query_rows]
+        query_columns = [col.upper() for col in query_columns]
+
         return set(query_rows), set(query_columns)
 
     def __check_validity(self, query_rows, query_columns, dataset_name):
@@ -71,6 +74,7 @@ class MatrixReader(object):
 
         return new_query_rows, new_query_columns
 
+
     def get_submatrix(self, query_rows, query_columns, dataset_name):
         """
         Queries specified dataset for particular rows and columns and returns
@@ -84,15 +88,19 @@ class MatrixReader(object):
         """
         # Get table we are querying
         table = self.datasets[dataset_name]
-        output_table = pd.DataFrame()
 
         # Clean query
         (query_rows, query_columns) = \
-            self.__remove_duplicates(query_rows, query_columns)
+            self.__clean_query(query_rows, query_columns)
         (query_rows, query_columns) = \
             self.__check_validity(query_rows, query_columns, dataset_name)
 
+        print("qrows: " + str(query_rows))
+        print("qcols: " + str(query_columns))
+        print(str(table))
+
         return table.loc[query_rows, query_columns]
+
 
     def get_json(self, query_rows, query_columns, dataset_name):
         """
