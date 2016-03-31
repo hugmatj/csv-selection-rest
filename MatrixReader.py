@@ -25,6 +25,7 @@ class MatrixReader(object):
             self.datasets[name] = pd.read_csv(dataset_map[name], sep=sep_char,
                 index_col=0)
 
+
     # TODO Maybe change to static method or remove self param
     def __clean_query(self, query_rows, query_columns):
         """
@@ -39,6 +40,7 @@ class MatrixReader(object):
         query_columns = [col.upper() for col in query_columns]
 
         return set(query_rows), set(query_columns)
+
 
     def __check_validity(self, query_rows, query_columns, dataset_name):
         """
@@ -117,6 +119,7 @@ class MatrixReader(object):
                                           dataset_name)
         return output_table.to_json(orient="index")
 
+
     def get_rows(self, dataset_name):
         """
         Returns set of all the row names in a dataset
@@ -126,6 +129,7 @@ class MatrixReader(object):
         :return: List of all row names in dataset_name
         """
         return self.datasets[dataset_name].index
+
 
     def get_rows_json(self, dataset_name):
         """
@@ -137,6 +141,7 @@ class MatrixReader(object):
         """
         return json.dumps(list( self.datasets[dataset_name].index ))
 
+
     def get_columns(self, dataset_name):
         """
         Returns set of all the column names in a dataset
@@ -146,6 +151,7 @@ class MatrixReader(object):
         :return: List of all column names in dataset_name
         """
         return self.datasets[dataset_name].columns
+
 
     def get_columns_json(self, dataset_name):
         """
