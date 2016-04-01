@@ -5,52 +5,47 @@ from bottle import route, run, request
 To use this service, fill in the DATASETS variable in the format
 <dataset name/key to be used in URL>:<relative filepath of dataset>
 """
-DATASETS = {"CCLE": "CCLE_inferred_prot_abundance.tab"}
+DATASETS = {"CCLE_protein": "CCLE_inferred_prot_abundance.tab"}
 reader = MatrixReader(DATASETS)
 
 
-@route('/query_table/<dataset_name>', method='GET')
-def query_table(dataset_name):
+# Custom URLs
+@route('/context/expression/cell_line/samples_available', method='GET')
+def get_rows():
+    """
+    GET request to get JSON list of all available cell-lines
+
+    :return: JSON list string of all cell-lines
+    """
+    return reader.get_rows_json("CCLE_protein")
+
+
+@route('/context/expression/cell_line/ids_available', method='GET')
+def get_columns():
+    """
+    GET request to get JSON list of all available gene ids
+
+    :return: JSON list string of all gene ids
+    """
+    return reader.get_columns_json("CCLE_protein")
+
+
+@route('/context/expression/cell_line', method='GET')
+def get_abundance():
     """
     GET request where query rows and columns, and datset name
     are put into URL a JSON of the data for those rows and
     columns is returned
 
-    URL form: .../query_table/dataset_name?rows=row1,row2&cols=col1,col2
+    URL: .../context/expression/cell_line?cells=cell1,cell2&genes=gene1,gene2
 
     :param dataset_name: Name of datset we are querying
     :return: String that JSON of queried rows and columns
     """
-    rows = request.query.rows.split(",")
-    cols = request.query.cols.split(",")
+    rows = request.query['cells'].split(",")
+    cols = request.query['genes'].split(",")
 
-    return reader.get_json(rows, cols, dataset_name)
-
-
-@route('/get_rows/<dataset_name>', method='GET')
-def get_rows(dataset_name):
-    """
-    GET request to get JSON list of all rows in a dataset
-
-    URL form: .../get_rows/dataset_name
-
-    :param dataset_name: Name of dataset we want rows from
-    :return: JSON string of all rows
-    """
-    return reader.get_rows_json(dataset_name)
-
-
-@route('/get_columns/<dataset_name>', method='GET')
-def get_columns(dataset_name):
-    """
-    GET request to get JSON list of all columns in a dataset
-
-    URL form: .../get_columns/dataset_name
-
-    :param dataset_name: Name of dataset we want column from
-    :return: JSON string of all rows
-    """
-    return reader.get_columns_json(dataset_name)
+    return reader.get_json(rows, cols, 'CCLE_protein')
 
 
 def start():
