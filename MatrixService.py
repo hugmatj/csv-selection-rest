@@ -1,6 +1,5 @@
 from MatrixReader import MatrixReader
-from bottle import route, run, request
-
+from bottle import route, run, request, response, hook
 """
 To use this service, fill in the DATASETS variable in the format
 <dataset name/key to be used in URL>:<relative filepath of dataset>
@@ -8,8 +7,17 @@ To use this service, fill in the DATASETS variable in the format
 DATASETS = {"CCLE_protein": "CCLE_inferred_prot_abundance.tab"}
 reader = MatrixReader(DATASETS)
 
+@hook('after_request')
+def enable_cors():
+    response.headers['Access-Control-Allow-Origin'] = '*'
 
 # Custom URLs
+@route('/')
+def get_status():
+    version = '1.0.1'
+    status = {'status': 'available', 'version': version, 'service': 'context' }
+    return status
+
 @route('/context/expression/cell_line/samples_available', method='GET')
 def get_rows():
     """
@@ -42,8 +50,8 @@ def get_abundance():
     :param dataset_name: Name of datset we are querying
     :return: String that JSON of queried rows and columns
     """
-    rows = request.query['cells'].split(",")
-    cols = request.query['genes'].split(",")
+    cols = request.query['cells'].split(",")
+    rows = request.query['genes'].split(",")
 
     return reader.get_json(rows, cols, 'CCLE_protein')
 

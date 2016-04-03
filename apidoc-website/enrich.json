@@ -1,0 +1,118 @@
+{
+  "swagger": "2.0",
+  "host": "enrich.ndexbio.org",
+  "schemes": [
+    "http"
+  ],
+  "info": {
+    "version": "1.0.0",
+    "title": "NDEx Enrich"
+  },
+  "paths": {
+    "/esets": {
+      "get": {
+        "summary": "Get the list of loaded enrichment sets.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": ["enchrichment_set1", "enchrichment_set2"]
+            }
+
+          }
+        }
+      }
+    },
+    "/esets/{esetname}": {
+      "get": {
+        "summary": "Get ID sets associated for the given enrichment set.",
+        "parameters": [
+          {
+            "name": "esetname",
+            "in": "path",
+            "description": "The name of the enrichment set. (e.g. cravat_nci)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/esets/{esetname}/idsets/{idsetid}": {
+      "get": {
+        "summary": "Get information for one ID set.",
+        "parameters": [
+          {
+            "name": "esetname",
+            "in": "path",
+            "description": "The name of the enrichment set. (e.g. cravat_nci)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "idsetid",
+            "in": "path",
+            "description": "The name of the enrichment set. (e.g. 9df5bc4a-efb3-11e5-9051-0660b7976219)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/esets/{esetname}/query": {
+      "post": {
+        "summary": "Takes a list of human gene symbols and an enrichment set name and returns a prioritized list of networks with metrics.",
+        "parameters": [
+          {
+            "name": "esetname",
+            "in": "path",
+            "description": "The name of the enrichment set. (e.g. cravat_nci)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "post_body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {"ids": ["APC", "BRCA1", "BRCA2", "CDK4", "CMM1", "HER2", "MLH1", "MSH2", "CDKN2", "TP53", "RB1"] }
+
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EnrichmentSetList": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "swagger": "2.0",
+  "host": "public.ndexbio.org",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/rest",
+  "info": {
+    "version": "1.3.0",
+    "title": "NDEx API"
+  },
+  "paths": {
+    "/network/{networkId}/namespaceFile/{prefix}": {
+      "get": {
+        "summary": "getBELNamespaceFile",
+        "description": "Retrieves the archived namespace file if it exists. Otherwise 404 will be returned.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "prefix",
+            "in": "path",
+            "description": "The namespace prefix to use.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "404": {
+            "description": "Namespace not found"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/namespace": {
+      "post": {
+        "summary": "addNamespace",
+        "description": "Adds the POSTed Namespace object to the network specified by 'networkId'.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "post_body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prefix": {
+                  "type": "string"
+                },
+                "uri": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}": {
+      "get": {
+        "summary": "getNetworkSummary",
+        "description": "Retrieves a NetworkSummary object based on the network specified by 'networkId.' This method returns an error if the network is not found or if the authenticated user does not have READ permission for the network.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  }
+}

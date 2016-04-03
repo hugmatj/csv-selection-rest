@@ -1,0 +1,44 @@
+swagger: '2.0'
+host: 127.0.0.1:8080
+schemes:
+  - http
+info:
+  version: 1.0.1
+  title: NDEx Context Service
+paths:
+  /:
+    get:
+      summary: Show service information.
+      responses:
+        '200':
+          description: Successful response
+  '/context/expression/cell_line/samples_available':
+    get:
+      summary: Get list of all available cell-lines.
+      responses:
+        '200':
+          description: Successful response
+  '/context/expression/cell_line/ids_available':
+    get:
+      summary: Get list of all available gene ids.
+      responses:
+        '200':
+          description: Successful response
+  '/context/expression/cell_line':
+    get:
+      summary: Get abundance data.
+      parameters:
+        - name: cells
+          in: query
+          required: true
+          type: string
+          description: Cell-lines to use. (e.g. X769P_KIDNEY,CAOV3_OVARY)
+        - name: genes
+          in: query
+          required: true
+          type: string
+          description: Gene IDs to use. (e.g. AKT3,MED6,CDH2)
+
+      responses:
+        '200':
+          description: Successful response
