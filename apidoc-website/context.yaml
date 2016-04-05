@@ -1,0 +1,62 @@
+swagger: '2.0'
+host: 127.0.0.1:8080
+schemes:
+  - http
+info:
+  version: 1.0.1
+  title: NDEx Context Service
+paths:
+  /:
+    get:
+      summary: Show service information.
+      responses:
+        '200':
+          description: Successful response
+  '/get_columns/{dataset_name}':
+    get:
+      summary: Get the columns of the dataset, which are most likely cell-line names.
+      parameters:
+        - name: dataset_name
+          in: path
+          required: true
+          type: string
+          description: Dataset to use. (e.g. CCLE)
+      responses:
+        '200':
+          description: Successful response
+  '/get_rows/{dataset_name}':
+    get:
+      summary: Get the rows of the dataset, which are most likely gene IDs.
+      parameters:
+        - name: dataset_name
+          in: path
+          required: true
+          type: string
+          description: Dataset to use. (e.g. CCLE)
+      responses:
+        '200':
+          description: Successful response
+  '/query_table/{dataset_name}':
+    get:
+      summary: Get table data, which is most likely protein abundance data.
+      parameters:
+        - name: dataset_name
+          in: path
+          required: true
+          type: string
+          description: Dataset to use. (e.g. CCLE)
+        - name: rows
+          in: query
+          required: true
+          type: string
+          description: Rows to use. Most likely gene IDs. (e.g. AKT3,MED6,CDH2)
+        - name: cols
+          in: query
+          required: true
+          type: string
+          description: Cols to use. Most likely cell-lines. (e.g. X769P_KIDNEY,CAOV3_OVARY)
+
+
+      responses:
+        '200':
+          description: Successful response

@@ -1,5 +1,5 @@
 from MatrixReader import MatrixReader
-from bottle import route, run, request
+from bottle import route, run, request, response, hook
 
 """
 To use this service, fill in the DATASETS variable in the format
@@ -7,6 +7,17 @@ To use this service, fill in the DATASETS variable in the format
 """
 DATASETS = {"CCLE": "CCLE_inferred_prot_abundance.tab"}
 reader = MatrixReader(DATASETS)
+
+@hook('after_request')
+def enable_cors():
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+# Custom URLs
+@route('/')
+def get_status():
+    version = '1.0.2'
+    status = {'status': 'available', 'version': version, 'service': 'context' }
+    return status
 
 
 @route('/query_table/<dataset_name>', method='GET')

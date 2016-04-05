@@ -1,0 +1,439 @@
+{
+  "swagger": "2.0",
+  "host": "public.ndexbio.org",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/rest",
+  "info": {
+    "version": "1.3.0",
+    "title": "NDEx API"
+  },
+  "paths": {
+    "/network/{networkId}/namespaceFile/{prefix}": {
+      "get": {
+        "summary": "getBELNamespaceFile",
+        "description": "Retrieves the archived namespace file if it exists. Otherwise 404 will be returned.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "prefix",
+            "in": "path",
+            "description": "The namespace prefix to use.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "404": {
+            "description": "Namespace not found"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/namespace": {
+      "post": {
+        "summary": "addNamespace",
+        "description": "Adds the POSTed Namespace object to the network specified by 'networkId'.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "post_body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prefix": {"type": "string"},
+                "uri": {"type": "string"}
+              }
+
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}": {
+      "get": {
+        "summary": "getNetworkSummary",
+        "description": "Retrieves a NetworkSummary object based on the network specified by 'networkId.' This method returns an error if the network is not found or if the authenticated user does not have READ permission for the network.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/edge/asNetwork/{skipBlocks}/{blockSize}": {
+      "get": {
+        "summary": "getEdges",
+        "description": "This method retrieves a subnetwork of the network specified by 'networkId' based on a ‘block’ of edges, where a ‘block’ is simply a set that is contiguous in the network as stored in the specific NDEx Server. The maximum number of edges to retrieve in the query is set by 'blockSize' (which may be any number chosen by the user) while 'skipBlocks' specifies the number of blocks of edges in sequence to ignore before selecting the block to return. The subnetwork is returned as a Network object containing the edges specified by the query plus all of the other network elements relevant to the edges.\n\nThis method is used by the NDEx Web UI to sample a network, enabling the user to view some of the content of a large network without attempting to retrieve and load the full network. It can also be used to obtain a network in ‘chunks’, but it is anticipated that this use will be superseded by upcoming API methods that will enable streaming transfers of network content.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "skipBlocks",
+            "in": "path",
+            "description": "the number of edges to skip",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "blockSize",
+            "in": "path",
+            "description": "the number of edges in the block",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/asNetwork": {
+      "get": {
+        "summary": "getCompleteNetwork",
+        "description": "The getCompleteNetwork method enables an application to obtain an entire network as a JSON structure. This is performed as a monolithic operation, so care should be taken when requesting very large networks. Applications can use the getNetworkSummary method to check the node and edge counts for a network before attempting to use getCompleteNetwork. As an optimization, networks that are designated read-only (see Make a Network Read-Only below) are cached by NDEx for rapid access.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/aspects": {
+      "get": {
+        "summary": "getAspectsAsCX",
+        "description": "The getAspectsAsCX method enables an application to obtain aspects of a given network as a CX structure.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/baseTerm/{skipBlocks}/{blockSize}": {
+      "get": {
+        "summary": "getBaseTerms",
+        "description": "Retrieves a list of BaseTerm objects from the network specified by 'networkId'. The maximum number of BaseTerm objects to retrieve in the query is set by 'blockSize' (which may be any number chosen by the user) while 'skipBlocks' specifies the number of blocks that have already been read.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "skipBlocks",
+            "in": "path",
+            "description": "the number of edges to skip",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "blockSize",
+            "in": "path",
+            "description": "the number of edges in the block",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/metadata": {
+      "get": {
+        "summary": "getNetworkCXMetadataCollection",
+        "description": "The getAspectsAsCX method enables an application to obtain aspects of a given network as a CX structure.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/aspect/{aspectName}/{limit}": {
+      "get": {
+        "summary": "getAspectElements",
+        "description": "The getAspectElement method returns elements in the specified aspect up to the given limit.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "aspectName",
+            "in": "path",
+            "description": "the type of aspect to get",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "the maximum number of aspects to get",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/asCX": {
+      "get": {
+        "summary": "getCompleteNetworkAsCX",
+        "description": "The getCompleteNetwork method enables an application to obtain an entire network as a CX structure. This is performed as a monolithic operation, so care should be taken when requesting very large networks. Applications can use the getNetworkSummary method to check the node and edge counts for a network before attempting to use getCompleteNetwork. As an optimization, networks that are designated read-only (see Make a Network Read-Only below) are cached by NDEx for rapid access.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/export/{networkId}/{format}": {
+      "get": {
+        "summary": "exportNetwork",
+        "description": "Retrieve an entire network specified by 'networkId' as a Network object. (Compare this method to getCompleteNetworkAsPropertyGraph).\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "format",
+            "in": "path",
+            "description": "the desired format of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/user/{permission}/{skipBlocks}/{blockSize}": {
+      "get": {
+        "summary": "getNetworkUserMemberships",
+        "description": "Retrieves a list of Membership objects which specify user permissions for the network specified by 'networkId'. The value of the 'permission' parameter constrains the type of the returned Membership objects and may take the following set of values: READ, WRITE, and ADMIN. READ, WRITE, and ADMIN are mutually exclusive. Memberships of all types can be retrieved by permission = 'ALL'. The maximum number of Membership objects to retrieve in the query is set by 'blockSize' (which may be any number chosen by the user) while 'skipBlocks' specifies the number of blocks that have already been read.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "permission",
+            "in": "path",
+            "description": "READ, WRITE, or ADMIN.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "skipBlocks",
+            "in": "path",
+            "description": "the number of edges to skip",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "blockSize",
+            "in": "path",
+            "description": "the number of edges in the block",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/member/{userUUID}": {
+      "delete": {
+        "summary": "deleteNetworkUserMembership",
+        "description": "Removes any permission for the network specified by 'networkId' for the user specified by 'userUUID': it deletes any Membership object that specifies a permission for the user-network combination. This method will return an error if the authenticated user making the request does not have sufficient permissions to make the deletion or if the network or user is not found. Removal is also denied if it would leave the network without any user having ADMIN permissions: NDEx does not permit networks to become 'orphans' without any owner.\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userUUID",
+            "in": "path",
+            "description": "The UUID to eliminate permissions for.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{UUID}": {
+      "delete": {
+        "summary": "deleteNetwork",
+        "description": "Deletes the network specified by networkId. There is no method to undo a deletion, so care should be exercised. A user can only delete networks that they own.\n",
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/{networkId}/setFlag/{parameter}={value}": {
+      "get": {
+        "summary": "setNetworkFlag",
+        "description": "Set the system flag specified by ‘parameter’ to ‘value’ for the network with id ‘networkId’. As of NDEx v1.2, the only supported parameter is readOnly={true|false}\n",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "The id of the network.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "parameter",
+            "in": "path",
+            "description": "The parameter to set.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "description": "The value to set the parameter to.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/network/api": {
+      "get": {
+        "summary": "getApi",
+        "description": "Retrieves the REST API documentation for network related operations as a list of RestResource objects.\n",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  }
+}
